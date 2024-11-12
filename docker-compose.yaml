@@ -7,7 +7,7 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - /home/${COMPUTER1_UBUNTU_NAME}:/var/www/html
+      - /home/${COMPUTER1_UBUNTU_NAME}/worldskills_app:/var/www/html
     networks:
       - ${COMPUTER1_NAME}_network
 
