@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  apache_computer1:
+    build: .
+    container_name: apache_${COMPUTER1_NAME}
+    ports:
+      - "8081:80"
+    volumes:
+      - /home/${COMPUTER1_UBUNTU_NAME}:/var/www/html
+    networks:
+      - ${COMPUTER1_NAME}_network
+
+  mysql_computer1:
+    image: mysql:5.7
+    container_name: mysql_${COMPUTER1_NAME}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD1}
+      MYSQL_DATABASE: ${MYSQL_DATABASE1}
+      MYSQL_USER: ${MYSQL_USER1}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD1}
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./computer1_mysql_data:/var/lib/mysql
+    networks:
+      - ${COMPUTER1_NAME}_network
+
+  phpmyadmin_computer1:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_${COMPUTER1_NAME}
+    environment:
+      PMA_HOST: mysql_${COMPUTER1_NAME}
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD1}
+    ports:
+      - "8082:80"
+    networks:
+      - ${COMPUTER1_NAME}_network
+
+networks:
+  computer1_network:
+    driver: bridge
