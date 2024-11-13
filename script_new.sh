@@ -17,7 +17,7 @@ echo "services:" >> docker-compose.yaml
 for ((i=1; i<=NUMBER_COMPUTER; i++)); do
   # Variables dynamiques pour chaque ordinateur
   COMPUTER_NAME_VAR="COMPUTER${i}_NAME"
-  UBUNTU_NAME_VAR="COMPUTER${i}_UBUNTU_NAME"
+  UBUNTU_NAME_VAR="COMPUTER${i}"
 
   COMPUTER_NAME=${!COMPUTER_NAME_VAR}
   UBUNTU_NAME=${!UBUNTU_NAME_VAR}
@@ -44,9 +44,11 @@ for ((i=1; i<=NUMBER_COMPUTER; i++)); do
     ports:
       - "808${i}:80"
     volumes:
-      - /home/${UBUNTU_NAME}/worldskills_app:/var/www/html
+      - /home/${UBUNTU_NAME_VAR}/app:/var/www/html
     networks:
       - ${COMPUTER_NAME}_network
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/app/symfo/public
 
   mysql_${COMPUTER_NAME}:
     image: mysql:5.7
@@ -63,6 +65,7 @@ for ((i=1; i<=NUMBER_COMPUTER; i++)); do
     networks:
       - ${COMPUTER_NAME}_network
 
+
   phpmyadmin_${COMPUTER_NAME}:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin_${COMPUTER_NAME}
@@ -71,7 +74,7 @@ for ((i=1; i<=NUMBER_COMPUTER; i++)); do
       PMA_USER: root
       PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - "808${i}2:80"
+      - "818${i}:80"
     networks:
       - ${COMPUTER_NAME}_network
 
