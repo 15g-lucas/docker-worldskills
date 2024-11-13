@@ -17,7 +17,7 @@ echo "services:" >> docker-compose.yaml
 for ((i=1; i<=NUMBER_COMPUTER; i++)); do
   # Variables dynamiques pour chaque ordinateur
   COMPUTER_NAME_VAR="COMPUTER${i}_NAME"
-  UBUNTU_NAME_VAR="COMPUTER${i}"
+  UBUNTU_NAME_VAR="computer${i}"
 
   COMPUTER_NAME=${!COMPUTER_NAME_VAR}
   UBUNTU_NAME=${!UBUNTU_NAME_VAR}
@@ -45,10 +45,9 @@ for ((i=1; i<=NUMBER_COMPUTER; i++)); do
       - "808${i}:80"
     volumes:
       - /home/${UBUNTU_NAME_VAR}/app:/var/www/html
+      - ./apache/apache.conf:/etc/apache2/sites-available/000-default.conf
     networks:
       - ${COMPUTER_NAME}_network
-    environment:
-      - APACHE_DOCUMENT_ROOT=/var/www/html/app/symfo/public
 
   mysql_${COMPUTER_NAME}:
     image: mysql:5.7
@@ -64,7 +63,6 @@ for ((i=1; i<=NUMBER_COMPUTER; i++)); do
       - ./computer${i}_mysql_data:/var/lib/mysql
     networks:
       - ${COMPUTER_NAME}_network
-
 
   phpmyadmin_${COMPUTER_NAME}:
     image: phpmyadmin/phpmyadmin
